@@ -1,4 +1,4 @@
-package com.company;
+package com.company.Task_1;
 
 import java.util.*;
 
@@ -6,8 +6,8 @@ public class Task_1 {
     int codeCar; //объявляем переменную для кода авто
     public int gosNumber; //объявляем переменную для гос номера
     public String runAndAddParam;
-    Integer run; //объявляем переменную для пробега
-    int addParam; //объявляем переменную для доп параметра
+    public int run; //объявляем переменную для пробега
+    public int addParam; //объявляем переменную для доп параметра
     double costOfFuel; //стоимость топлива
     double expenseOfFuel; //расход топлива
     double fuelConsumption; //расход топлива на 100 км
@@ -72,7 +72,7 @@ public class Task_1 {
         System.out.println("Расходы на класс авто 400: " + totalExpense_400);
 
         double[] arrTotalExp = {totalExpense_100, totalExpense_200, totalExpense_300, totalExpense_400};
-        double max = 0.0, min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE, min = Double.MAX_VALUE;
         String typeOfCarMax = "", typeOfCarMin = "";
 
         for (double m : arrTotalExp) {
@@ -113,54 +113,89 @@ public class Task_1 {
         System.out.print("Введите код авто - Вводить строго 'C100'/'C200'/'C300'/'C400': ");
         String codeAuto = sc.nextLine();
 
-        List<String> sortByRun = new ArrayList<String>(); //список авто, сортируемый по пробегу
-        List<String> sortByAddParameter = new ArrayList<String>();//список авто, сортируемый по доп параметру
+        List<String> listByCodeAuto = new ArrayList<String>(); //список авто, который будет сформирован после указанного пользователем кода авто
+        //Для каждого госномера создаем по отдельному списку
+        List<String> gosNumber1List = new ArrayList<>(); //список авто с госномером 1
+        List<String> gosNumber2List = new ArrayList<>();
+        List<String> gosNumber3List = new ArrayList<>();
+
         for (int i=0;i<arr.length;i++) {
             if (arr[i].contains(codeAuto)){
-                sortByRun.add(arr[i]);
-                sortByAddParameter.add(arr[i]);
+                listByCodeAuto.add(arr[i]);
                            }
         }
         sc.close();
+
+        //Создаем экземпляры компаратора для сортировки
         ComparatorByRun comparator = new ComparatorByRun();
-        Collections.sort(sortByRun, comparator);
         ComparatorByAddParameter cr = new ComparatorByAddParameter();
-        Collections.sort(sortByAddParameter, cr);
-        String []sortByRunArray = new String[sortByRun.size()];
-        String []sortByAddParameterArray = new String[sortByAddParameter.size()];
-        System.out.println("С сортировкой по пробегу ");
-        for (int i = 0; i < sortByRun.size(); i++) {
-            sortByRunArray[i] = sortByRun.get(i);
-            String addParam = sortByRunArray[i].substring(sortByRunArray[i].lastIndexOf("-") + 1);
-            String gosNumber = sortByRunArray[i].substring(5, 6);
-            String run = "";
-            System.out.print("Код авто: " + codeAuto + " ");
-            System.out.print("Госномер: " + gosNumber + " ");
-            if (sortByRunArray[i].substring(8).contains("-")) {
-                run = sortByRunArray[i].substring(7, sortByRunArray[i].lastIndexOf("-"));
-                System.out.print("Пробег: " + run + " ");
-                System.out.println("Доп параметр: " + addParam);
+
+        int totalRun1 = 0; //суммарный пробег для госномера 1
+        int totalAddParam1 = 0; //суммарный доп параметр для госномера 1
+        int totalRun2 = 0;
+        int totalAddParam2 = 0;
+        int totalRun3 = 0;
+        int totalAddParam3 = 0;
+        for (int i = 0; i < listByCodeAuto.size(); i++) {
+            String str = listByCodeAuto.get(i);
+            int addParam = Integer.parseInt(str.substring(str.lastIndexOf("-") + 1));
+            int gosNumber = Integer.parseInt(str.substring(5, 6));
+            int run = 0;
+            if (str.substring(8).contains("-")) {
+                run = Integer.parseInt(str.substring(7, str.lastIndexOf("-")));
+                if (gosNumber == 1){
+                    totalRun1 += run;
+                    totalAddParam1 += addParam;
+                }
+                if (gosNumber == 2){
+                    totalRun2 += run;
+                    totalAddParam2 += addParam;
+                }
+                if (gosNumber == 3){
+                    totalRun3 += run;
+                    totalAddParam3 += addParam;
+                }
             } else {
-                run = sortByRunArray[i].substring(7);
-                System.out.println("Пробег: " + run);
+                run = Integer.parseInt(str.substring(7));
+                if (gosNumber == 1) {
+                    totalRun1 += run;
+                }
+                if (gosNumber == 2) {
+                    totalRun2 += run;
+                }
+                if (gosNumber == 3) {
+                    totalRun3 += run;
+                }
             }
         }
-        System.out.println("С сортировкой по доп параметру ");
-        for (int i = 0; i < sortByAddParameter.size(); i++) {
-            sortByAddParameterArray[i] = sortByAddParameter.get(i);
-            String addParam = sortByAddParameterArray[i].substring(sortByAddParameterArray[i].lastIndexOf("-") + 1);
-            String gosNumber = sortByAddParameterArray[i].substring(5, 6);
-            String run = "";
-            System.out.print("Код авто: " + codeAuto + " ");
-            System.out.print("Госномер: " + gosNumber + " ");
-            if (sortByAddParameterArray[i].substring(8).contains("-")) {
-                run = sortByAddParameterArray[i].substring(7, sortByAddParameterArray[i].lastIndexOf("-"));
-                System.out.print("Пробег: " + run + " ");
-                System.out.println("Доп параметр: " + addParam);
-            } else {
-                run = sortByAddParameterArray[i].substring(7);
-                System.out.println("Пробег: " + run);
-            }
+
+        gosNumber1List.add(codeAuto + "_" + 1 + "-" + totalRun1 + "-" + totalAddParam1);
+        gosNumber2List.add(codeAuto + "_" + 2 + "-" + totalRun2 + "-" + totalAddParam2);
+        gosNumber3List.add(codeAuto + "_" + 3 + "-" + totalRun3 + "-" + totalAddParam3);
+
+        List<String> sortByRun = new ArrayList<String>(); //список авто, сортируемый по пробегу
+        List<String> sortByAddParameter = new ArrayList<String>(); //по доп параметру
+
+        //Объединяем списки, сформированные по гос номерам
+        sortByRun.addAll(gosNumber1List);
+        sortByRun.addAll(gosNumber2List);
+        sortByRun.addAll(gosNumber3List);
+
+        sortByAddParameter.addAll(gosNumber1List);
+        sortByAddParameter.addAll(gosNumber2List);
+        sortByAddParameter.addAll(gosNumber3List);
+
+        //Применяем сортировку по пробегу и доп параметру
+        Collections.sort(sortByRun, comparator);
+        Collections.sort(sortByAddParameter, cr);
+
+        System.out.println("С сортировкой по пробегу");
+        for (String s : sortByRun){
+            System.out.println("Код авто: " + codeAuto + " Госномер: " + s.substring(5,6) + " Пробег: " + s.substring(7, s.lastIndexOf("-")) + " Доп параметр: " + s.substring(s.lastIndexOf("-")+1));
+        }
+        System.out.println("С сортировкой по доп параметру");
+        for (String s : sortByAddParameter){
+            System.out.println("Код авто: " + codeAuto + " Госномер: " + s.substring(5,6) + " Пробег: " + s.substring(7, s.lastIndexOf("-")) + " Доп параметр: " + s.substring(s.lastIndexOf("-")+1));
         }
 }
     public class ComparatorByRun implements Comparator<String> {
